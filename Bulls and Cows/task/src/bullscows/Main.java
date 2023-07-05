@@ -1,37 +1,39 @@
 package bullscows;
 
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("""
-                The secret code is prepared: ****.
+        int[] secretCode = {9, 3, 0, 5};
+        int bulls = 0;
+        int cows = 0;
 
-                Turn 1. Answer:
-                1234
-                Grade: 1 cow.
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.next();
 
-                Turn 2. Answer:
-                5678
-                Grade: 1 cow.
+        for (int i = 0; i < secretCode.length; i++) {
+            for (int j = 0; j < secretCode.length; j++) {
+                int number = Character.getNumericValue(input.charAt(j));
+                if (i == j && secretCode[i] == number) {
+                    bulls++;
+                }
+                else if (i != j && secretCode[i] == number && secretCode[j] != number) {
+                    cows++;
+                }
+            }
+        }
 
-                Turn 3. Answer:
-                9012
-                Grade: 1 bull and 1 cow.
-
-                Turn 4. Answer:
-                9087
-                Grade: 1 bull and 1 cow.
-
-                Turn 5. Answer:
-                1087
-                Grade: 1 cow.
-
-                Turn 6. Answer:
-                9205
-                Grade: 3 bulls.
-
-                Turn 7. Answer:
-                9305
-                Grade: 4 bulls.
-                Congrats! The secret code is 9305.""");
+        if (bulls > 0 && cows == 0) {
+            System.out.printf("Grade: %d bulls(s). The secret code is %d%d%d%d.", bulls, secretCode[0], secretCode[1], secretCode[2], secretCode[3]);
+        }
+        else if (cows > 0 && bulls == 0) {
+            System.out.printf("Grade: %d cow(s). The secret code is %d%d%d%d.", cows, secretCode[0], secretCode[1], secretCode[2], secretCode[3]);
+        }
+        else if (bulls > 0 && cows > 0) {
+            System.out.printf("Grade: %d bulls(s) and %d cow(s). The secret code is %d%d%d%d.", bulls, cows, secretCode[0], secretCode[1], secretCode[2], secretCode[3]);
+        }
+        else {
+            System.out.printf("None. The secret code is %d%d%d%d.", secretCode[0], secretCode[1], secretCode[2], secretCode[3]);
+        }
     }
 }
