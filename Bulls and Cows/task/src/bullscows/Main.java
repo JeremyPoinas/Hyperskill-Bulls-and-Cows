@@ -3,37 +3,60 @@ package bullscows;
 import java.util.Scanner;
 
 public class Main {
+    String userInput;
+    String secretCode;
+    int bulls;
+    int cows;
+
+    Main(String userInput, String secretCode) {
+        this.userInput = userInput;
+        this.secretCode = secretCode;
+    }
+
     public static void main(String[] args) {
-        int[] secretCode = {9, 3, 0, 5};
-        int bulls = 0;
-        int cows = 0;
-
         Scanner scanner = new Scanner(System.in);
-        String input = scanner.next();
+        String userInput = scanner.nextLine();
+        String secretCode = "9305";
+        Main code = new Main(userInput, secretCode);
+        code.checkCode();
+        code.printOutput();
+    }
 
-        for (int i = 0; i < secretCode.length; i++) {
-            for (int j = 0; j < secretCode.length; j++) {
-                int number = Character.getNumericValue(input.charAt(j));
-                if (i == j && secretCode[i] == number) {
-                    bulls++;
-                }
-                else if (i != j && secretCode[i] == number && secretCode[j] != number) {
-                    cows++;
+    void checkCode() {
+        // Checks if the user's input is identical to the secret code
+        if (userInput.equals(secretCode)) {
+            bulls = 4;
+        } else {
+            for (int i = 0; i < secretCode.length(); i++) {
+                // if the characters are the same
+                if (userInput.charAt(i) == secretCode.charAt(i)) {
+                    addBulls();
+                    // if the secret code contains the character
+                } else if (secretCode.contains(String.valueOf(userInput.charAt(i)))) {
+                    addCows();
                 }
             }
         }
+    }
 
-        if (bulls > 0 && cows == 0) {
-            System.out.printf("Grade: %d bulls(s). The secret code is %d%d%d%d.", bulls, secretCode[0], secretCode[1], secretCode[2], secretCode[3]);
-        }
-        else if (cows > 0 && bulls == 0) {
-            System.out.printf("Grade: %d cow(s). The secret code is %d%d%d%d.", cows, secretCode[0], secretCode[1], secretCode[2], secretCode[3]);
-        }
-        else if (bulls > 0 && cows > 0) {
-            System.out.printf("Grade: %d bulls(s) and %d cow(s). The secret code is %d%d%d%d.", bulls, cows, secretCode[0], secretCode[1], secretCode[2], secretCode[3]);
-        }
-        else {
-            System.out.printf("None. The secret code is %d%d%d%d.", secretCode[0], secretCode[1], secretCode[2], secretCode[3]);
+    void addBulls() {
+        bulls++;
+    }
+
+    void addCows() {
+        cows++;
+    }
+
+    void printOutput() {
+        // Prints the bulls and cows
+        if (bulls > 0 && cows > 0) {
+            System.out.printf("Grade: %d bull(s) and %d cow(s). The secret code is %s", bulls, cows, secretCode);
+        } else if (bulls > 0) {
+            System.out.printf("Grade: %d bull(s). The secret code is %s", bulls, secretCode);
+        } else if (cows > 0) {
+            System.out.printf("Grade: %d cows(s). The secret code is %s", cows, secretCode);
+        } else {
+            System.out.printf("Grade: None. The secret code is %s", secretCode);
         }
     }
 }
