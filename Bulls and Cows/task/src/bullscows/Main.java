@@ -7,38 +7,49 @@ public class Main {
     String secretCode;
     int bulls;
     int cows;
+    int turns = 0;
 
-    Main(String userInput, String secretCode) {
-        this.userInput = userInput;
+    Main(String secretCode) {
         this.secretCode = secretCode;
     }
 
     public static void main(String[] args) {
-        System.out.printf("The random secret number is %s", generateRandomNumber());
+        // Generate the secret code
+        String secretCode = generateRandomNumber();
+        while  (secretCode == null) {
+            secretCode = generateRandomNumber();
+        }
 
-        /*Scanner scanner = new Scanner(System.in);
-        String userInput = scanner.nextLine();
-        String secretCode = "9305";
-        Main code = new Main(userInput, secretCode);
-        code.checkCode();
-        code.printOutput();*/
+        Main game = new Main(secretCode);
+        // Create a loop until the game is finished
+        game.checkCode();
+        while (!game.printOutput().equals("WON")) {
+            game.checkCode();
+        }
     }
 
     public static String generateRandomNumber() {
+        System.out.println("Please, enter the secret code's length:");
         Scanner scanner = new Scanner(System.in);
         int size = scanner.nextInt();
 
+        // Check that the size of the secret code requested be <= 10
         if (size > 10) {
             System.out.println("Error");
             return null;
         }
+
+        System.out.println("Okay, let's start a game!");
         StringBuilder secretCode = new StringBuilder();
 
         while (secretCode.length() < size) {
             StringBuilder pseudoRandomNumber = new StringBuilder(String.valueOf(System.nanoTime())).reverse();
+
+            // Trim all the 0 at the beginning of the string
             while (pseudoRandomNumber.charAt(0) == '0') {
                 pseudoRandomNumber.delete(0, 1);
             }
+            // If size not enough, we start again
             if (pseudoRandomNumber.length() < size) {
                 continue;
             }
@@ -46,12 +57,14 @@ public class Main {
             int[] uniqueDigits = new int[10];
             Arrays.fill(uniqueDigits, 0);
 
+            // Find all the unique digits
             for (int i = 0; i < pseudoRandomNumber.length() && secretCode.length() < size; i++) {
                 int digit = Character.getNumericValue(pseudoRandomNumber.charAt(i));
                 if (++uniqueDigits[digit] > 1) {
                     secretCode = new StringBuilder();
                     break;
                 }
+                // Generate the secret code
                 secretCode.append(pseudoRandomNumber.charAt(i));
             }
         }
@@ -59,9 +72,17 @@ public class Main {
     }
 
     void checkCode() {
+        // Initialize all inputs
+        turns++;
+        bulls = 0;
+        cows = 0;
+        System.out.printf("Turn %d:\n", turns);
+        Scanner scanner = new Scanner(System.in);
+        userInput = scanner.nextLine();
+
         // Checks if the user's input is identical to the secret code
         if (userInput.equals(secretCode)) {
-            bulls = 4;
+            bulls = secretCode.length();
         } else {
             for (int i = 0; i < secretCode.length(); i++) {
                 // if the characters are the same
@@ -83,16 +104,24 @@ public class Main {
         cows++;
     }
 
-    void printOutput() {
+    String printOutput() {
         // Prints the bulls and cows
-        if (bulls > 0 && cows > 0) {
-            System.out.printf("Grade: %d bull(s) and %d cow(s). The secret code is %s", bulls, cows, secretCode);
+        if (bulls == secretCode.length()) {
+            System.out.printf("Grade: %d bull(s).\nCongratulations! You guessed the secret code.", bulls);
+            return "WON";
+        }
+        else if (bulls > 0 && cows > 0) {
+            System.out.printf("Grade: %d bull(s) and %d cow(s)\n", bulls, cows);
+            return "ONGOING";
         } else if (bulls > 0) {
-            System.out.printf("Grade: %d bull(s). The secret code is %s", bulls, secretCode);
+            System.out.printf("Grade: %d bull(s)\n", bulls);
+            return "ONGOING";
         } else if (cows > 0) {
-            System.out.printf("Grade: %d cows(s). The secret code is %s", cows, secretCode);
+            System.out.printf("Grade: %d cows(s)\n", cows);
+            return "ONGOING";
         } else {
-            System.out.printf("Grade: None. The secret code is %s", secretCode);
+            System.out.println("Grade: None.");
+            return "ONGOING";
         }
     }
 }
