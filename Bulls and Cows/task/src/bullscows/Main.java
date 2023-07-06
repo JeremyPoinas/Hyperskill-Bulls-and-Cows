@@ -1,6 +1,6 @@
 package bullscows;
 
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     String userInput;
@@ -14,12 +14,48 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        System.out.printf("The random secret number is %s", generateRandomNumber());
+
+        /*Scanner scanner = new Scanner(System.in);
         String userInput = scanner.nextLine();
         String secretCode = "9305";
         Main code = new Main(userInput, secretCode);
         code.checkCode();
-        code.printOutput();
+        code.printOutput();*/
+    }
+
+    public static String generateRandomNumber() {
+        Scanner scanner = new Scanner(System.in);
+        int size = scanner.nextInt();
+
+        if (size > 10) {
+            System.out.println("Error");
+            return null;
+        }
+        StringBuilder secretCode = new StringBuilder();
+
+        while (secretCode.length() < size) {
+            StringBuilder pseudoRandomNumber = new StringBuilder(String.valueOf(System.nanoTime())).reverse();
+            while (pseudoRandomNumber.charAt(0) == '0') {
+                pseudoRandomNumber.delete(0, 1);
+            }
+            if (pseudoRandomNumber.length() < size) {
+                continue;
+            }
+
+            int[] uniqueDigits = new int[10];
+            Arrays.fill(uniqueDigits, 0);
+
+            for (int i = 0; i < pseudoRandomNumber.length() && secretCode.length() < size; i++) {
+                int digit = Character.getNumericValue(pseudoRandomNumber.charAt(i));
+                if (++uniqueDigits[digit] > 1) {
+                    secretCode = new StringBuilder();
+                    break;
+                }
+                secretCode.append(pseudoRandomNumber.charAt(i));
+            }
+        }
+        return String.valueOf(secretCode);
     }
 
     void checkCode() {
