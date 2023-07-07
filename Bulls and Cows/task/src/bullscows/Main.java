@@ -40,34 +40,21 @@ public class Main {
         }
 
         System.out.println("Okay, let's start a game!");
+
+        Random random = new Random();
         StringBuilder secretCode = new StringBuilder();
+        int[] uniqueDigits = new int[10];
+        Arrays.fill(uniqueDigits, 0);
 
-        while (secretCode.length() < size) {
-            StringBuilder pseudoRandomNumber = new StringBuilder(String.valueOf(System.nanoTime())).reverse();
-
-            // Trim all the 0 at the beginning of the string
-            while (pseudoRandomNumber.charAt(0) == '0') {
-                pseudoRandomNumber.delete(0, 1);
+        for (int i = 0; i < size; i++) {
+            int digit = random.nextInt(10);
+            while (uniqueDigits[digit] == 1) {
+                digit = random.nextInt(10);
             }
-            // If size not enough, we start again
-            if (pseudoRandomNumber.length() < size) {
-                continue;
-            }
-
-            int[] uniqueDigits = new int[10];
-            Arrays.fill(uniqueDigits, 0);
-
-            // Find all the unique digits
-            for (int i = 0; i < pseudoRandomNumber.length() && secretCode.length() < size; i++) {
-                int digit = Character.getNumericValue(pseudoRandomNumber.charAt(i));
-                if (++uniqueDigits[digit] > 1) {
-                    secretCode = new StringBuilder();
-                    break;
-                }
-                // Generate the secret code
-                secretCode.append(pseudoRandomNumber.charAt(i));
-            }
+            uniqueDigits[digit]++;
+            secretCode.append(digit);
         }
+
         return String.valueOf(secretCode);
     }
 
