@@ -33,27 +33,44 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         int size = scanner.nextInt();
 
+        System.out.println("Input the number of possible symbols in the code:");
+        int range = scanner.nextInt();
+
         // Check that the size of the secret code requested be <= 10
-        if (size > 10) {
+        if (size < 1 || range < 1 || range > 36 || range < size) {
             System.out.println("Error");
             return null;
         }
 
-        System.out.println("Okay, let's start a game!");
-
         Random random = new Random();
         StringBuilder secretCode = new StringBuilder();
-        int[] uniqueDigits = new int[10];
+        int[] uniqueDigits = new int[36];
         Arrays.fill(uniqueDigits, 0);
 
         for (int i = 0; i < size; i++) {
-            int digit = random.nextInt(10);
+            int digit = random.nextInt(range);
             while (uniqueDigits[digit] == 1) {
-                digit = random.nextInt(10);
+                digit = random.nextInt(range);
             }
             uniqueDigits[digit]++;
-            secretCode.append(digit);
+            if (digit < 10) {
+                secretCode.append(digit);
+            } else {
+                secretCode.append((char) ('a' + digit - 10));
+            }
         }
+
+        char charToAppend = '*';
+        char[] charArray = new char[size];
+        Arrays.fill(charArray, charToAppend);
+        String secretString = new String(charArray);
+        char lastChar =  (char) ('a' + range - 11);
+
+        System.out.printf("The secret is prepared: %s (0-9, %s).\n",
+                secretString,
+                lastChar != '`' ? "a-" + lastChar : "No symbols"
+        );
+        System.out.println("Okay, let's start a game!");
 
         return String.valueOf(secretCode);
     }
