@@ -16,8 +16,8 @@ public class Main {
     public static void main(String[] args) {
         // Generate the secret code
         String secretCode = generateRandomNumber();
-        while  (secretCode == null) {
-            secretCode = generateRandomNumber();
+        if  (secretCode == null) {
+            return;
         }
 
         Main game = new Main(secretCode);
@@ -31,9 +31,17 @@ public class Main {
     public static String generateRandomNumber() {
         System.out.println("Please, enter the secret code's length:");
         Scanner scanner = new Scanner(System.in);
+        if (!scanner.hasNextInt()) {
+            System.out.println("Error");
+            return null;
+        }
         int size = scanner.nextInt();
 
         System.out.println("Input the number of possible symbols in the code:");
+        if (!scanner.hasNextInt()) {
+            System.out.println("Error");
+            return null;
+        }
         int range = scanner.nextInt();
 
         // Check that the size of the secret code requested be <= 10
